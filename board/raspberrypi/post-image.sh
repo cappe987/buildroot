@@ -16,8 +16,13 @@ if [ ! -e "${GENIMAGE_CFG}" ]; then
 		FILES+=( "${i#${BINARIES_DIR}/}" )
 	done
 
+        mkenvimage -s 16384 -o "${BINARIES_DIR}/uboot.env" "${BOARD_DIR}/uboot-custom.env"
+	#mkenvimage -s ${BR2_PACKAGE_HOST_UBOOT_TOOLS_ENVIMAGE_SIZE} -o "${BINARIES_DIR}/uboot.env" "${BOARD_DIR}/${BR2_PACKAGE_HOST_UBOOT_TOOLS_ENVIMAGE_SOURCE}"
+
 	KERNEL=$(sed -n 's/^kernel=//p' "${BINARIES_DIR}/rpi-firmware/config.txt")
 	FILES+=( "${KERNEL}" )
+	FILES+=( "Image" )
+	FILES+=( "uboot.env" )
 
 	BOOT_FILES=$(printf '\\t\\t\\t"%s",\\n' "${FILES[@]}")
 	sed "s|#BOOT_FILES#|${BOOT_FILES}|" "${BOARD_DIR}/genimage.cfg.in" \
